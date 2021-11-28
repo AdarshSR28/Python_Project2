@@ -58,7 +58,7 @@ def check_range(range1, range2):
 
 
 @app.route("/", methods = ["GET", "POST"])
-def hello_world():
+def build():
 
     error = None
     success = None
