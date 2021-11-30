@@ -48,6 +48,50 @@
         </center>
 
     </form>
+    <center>
+        <h5>Optional Uploads</h5>
+    </center>
+    
+    <form action="/" method="post" enctype="multipart/form-data">
+        <center>
+            
+            <div>
+                <label for="signature">Upload signature: </label>
+                <input type="file" name="signature" value="signature">
+                <input type="submit" name="submit_signature" value="Submit">
+            </div>
+            
+            <center>
+                {% if success_signature %}
+                <p style="color:#0000ff">Upload sucess!</p>
+                {% endif %}
+                
+                {% if error_signature %}
+                <p style="color:crimson">{{error_signature}}</p>
+                {% endif %}
+            </center>
+        </center>
+    </form>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <center>
+            
+            <div>
+                <label for="signature">Upload stamp: </label>
+                <input type="file" name="stamp" value="stamp">
+                <input type="submit" name="submit_stamp" value="Submit">
+            </div>
+            
+            <center>
+                {% if success_stamp %}
+                <p style="color:#0000ff">Upload sucess!</p>
+                {% endif %}
+                
+                {% if error_stamp %}
+                <p style="color:crimson">{{error_stamp}}</p>
+                {% endif %}
+            </center>
+        </center>
+    </form>
 
     <center> 
         <h2>Generator</h2>

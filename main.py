@@ -6,18 +6,28 @@ import shutil
 
 app = Flask(__name__)
 ALLOWED_EXTS = {"csv"}
-
+ALLOWED_PICS = {"jpeg","jpg","png"}
 def check_file(file):
     return '.' in file and file.rsplit('.',1)[1].lower() in ALLOWED_EXTS
 
+def check_img_ext(file):
+    return '.' in file and file.rsplit('.',1)[1].lower() in ALLOWED_PICS
+
 def refresh_server():
     output_path = ".\\outputs"
+    signature_path = "./signature_photo"
+    stamp_path = "./stamp_photo"
     uploads_path = ".\\uploads"
     try:
         if os.path.exists(output_path):
             shutil.rmtree(output_path)
         if os.path.exists(uploads_path):
             shutil.rmtree(uploads_path)
+        
+        if os.path.exists(signature_path):
+            shutil.rmtree(signature_path)
+        if os.path.exists(stamp_path):
+            shutil.rmtree(stamp_path)
         
         return True
 
@@ -95,7 +105,57 @@ def build():
             namesroll_file.save(os.path.join(upload_path,"names-roll.csv"))
             subjectmaster_file.save(os.path.join(upload_path,"subjects_master.csv"))
             
-            return render_template("index.html", error=error, success = "Upload success" )
+            return render_template('index.html', error=error, success = "Upload success" )
+        
+        if 'submit_signature' in request.form:
+            
+            error_signature = None
+            signature_file = request.files["signature"]
+            signature_filename = signature_file.filename
+
+            if signature_filename == '':
+                error_signature = "Please upload the signature file!"
+                return render_template('index.html',error_signature = error_signature)
+
+            if not (check_img_ext(signature_filename)):
+                error_signature = "Please upload PNG,JPEG,JPG type files!"
+                return render_template('index.html', error_signature = error_signature)
+
+            upload_path = "./signature_photo"
+
+            if os.path.exists(upload_path):
+                shutil.rmtree(upload_path)
+                os.mkdir(upload_path)
+            else:
+                os.mkdir(upload_path)
+            signature_file.save(os.path.join(upload_path,"signature.png"))
+            return render_template('index.html', error_signature=error_signature, success_signature = "Upload success" )
+        
+        if 'submit_stamp' in request.form:
+
+            error_stamp = None
+            stamp_file = request.files["stamp"]
+            stamp_filename = stamp_file.filename
+
+            if stamp_filename == '':
+                error_stamp = "Please upload the stamp file!"
+                return render_template('index.html',error_stamp = error_stamp)
+            
+            
+            if not (check_img_ext(stamp_filename)):
+                error_stamp = "Please upload PNG,JPEG,JPG type files!"
+                return render_template('index.html', error_stamp = error_stamp)
+
+            upload_path = "./stamp_photo"
+
+            if os.path.exists(upload_path):
+                shutil.rmtree(upload_path)
+                os.mkdir(upload_path)
+            else:
+                os.mkdir(upload_path)
+            stamp_file.save(os.path.join(upload_path,"stamp.png"))
+            return render_template('index.html', error_stamp=error_stamp, success_stamp = "Upload success" )
+
 
         if 'generate_range' in request.form:
             
