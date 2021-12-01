@@ -10,7 +10,7 @@
     
     <h1>
         <center>
-            Quiz Marksheet Generator
+            Transcripts Generator
         </center>
     </h1>
     <center>
@@ -111,7 +111,15 @@
                 <input type="submit" name="generate_range" value="Click to generate rangewise transcripts!">
             </div>
             <center>
-                
+                {% if success_range %}
+                <p style="color:#0000ff">{{success_range}}</p>
+                <a href="{{url_for("download_transcripts")}}">Download Transcripts zip file</a>
+                {% endif %}
+                <br>
+                {% if not_present %}
+                <a href="{{url_for("not_present_function")}}">Check students whose file were not generated</a>
+                {% endif %}
+
                 {% if error_range %}
                 <p style="color:crimson">{{error_range}}</p>
                 {% endif %}
@@ -126,6 +134,15 @@
             <div>
                 <input type="submit" name="generate_full" value="Click to generate all transcripts!">
             </div>
+            <center>
+                {% if success_full %}
+                <p style="color:#0000ff">{{success_full}}</p>
+                <a href="{{url_for("download_transcripts")}}">Download Transcripts zip file</a>
+                {% endif %}
+                {% if error_full %}
+                <p style="color:crimson">{{error_full}}</p>
+                {% endif %}
+            </center>
         </center>
         <div>
             <center>

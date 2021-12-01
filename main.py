@@ -1,8 +1,12 @@
+from csv import excel_tab
 from re import sub
-from flask import Flask,request
+import re
+from flask import Flask,request,send_file
 from flask.templating import render_template
 import os
 import shutil
+import range_roll_generator
+import generate_full
 
 app = Flask(__name__)
 ALLOWED_EXTS = {"csv"}
@@ -12,6 +16,19 @@ def check_file(file):
 
 def check_img_ext(file):
     return '.' in file and file.rsplit('.',1)[1].lower() in ALLOWED_PICS
+
+
+not_present = []
+@app.route("/not_present_list")
+def not_present_function():
+    
+    return render_template("not_present.html", np = not_present)
+
+
+@app.route("/download")
+def download_transcripts():
+    path = ".\\Transcripts.zip"
+    return send_file(path, as_attachment=True)
 
 def refresh_server():
     output_path = ".\\outputs"
@@ -28,7 +45,9 @@ def refresh_server():
             shutil.rmtree(signature_path)
         if os.path.exists(stamp_path):
             shutil.rmtree(stamp_path)
-        
+        if os.path.exists(".\Transcripts.zip"):
+            os.remove(".\Transcripts.zip")
+        not_present = []
         return True
 
     except Exception:
@@ -60,7 +79,7 @@ def check_range(range1, range2):
      and year1.lower()==year2.lower()
      and branch1.lower()==branch2.lower()
      and course1.lower()==course2.lower()
-     and (int(roll1) < int(roll2))):
+     and (int(roll1) <= int(roll2))):
         return True
     return False
 
@@ -162,8 +181,45 @@ def build():
             if not (check_range(range1 = request.form['range1'], range2 = request.form['range2'])):
                 error_range = "Please enter a valid range"
                 return render_template('index.html', error_range = error_range)
+            try:
+                range_roll = []
+                template_roll = request.form['range1'][0:6]
+                start_roll = int(request.form['range1'][6:8])
+                end_roll = int(request.form['range2'][6:8])
 
-            return render_template("index.html")
+                for i in range(start_roll,end_roll+1):
+                    if i/10 < 1:
+                        range_roll.append(template_roll.upper() + "0" + str(i))
+                    else:
+                        range_roll.append(template_roll.upper() + str(i))
+                
+                global not_present 
+                not_present = range_roll_generator.range_generate(range_roll)
+            except Exception:
+                return render_template("index.html", error_range = "Error in manipulating files! Please upload correct files!")
+            
+            if os.path.exists(".\\outputs"):
+                shutil.make_archive("Transcripts",'zip',".\\outputs" )
+                return render_template("index.html", success_range = "The files have been generated sucessfully in the output folder!",
+                    not_present = not_present
+                )
+            return render_template("index.html", error_range = "Could not generate files in the given range",
+                    not_present = not_present
+                )
+        
+        
+        if 'generate_full' in request.form:
+            try:
+                if not os.path.exists(".\\uploads"):
+                    return render_template("index.html", error_full = "Please upload the files first!")
+                generate_full.generate_all_pdf()
+            except Exception:
+                return render_template("index.html", error_full = "Error in manipulating files! Please upload correct files!")
+
+            if os.path.exists(".\\outputs"):
+                shutil.make_archive("Transcripts",'zip',".\\outputs" )    
+                return render_template("index.html", success_full = "The files have been generated sucessfully in the output folder!")
+            return render_template("index.html", error_full = "No roll number found!")
         
         if 'refresh' in request.form:
             if refresh_server():
