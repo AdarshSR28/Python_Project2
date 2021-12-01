@@ -46,6 +46,24 @@ def range_generate(range_roll):
             for row in reader:
                 dct=dict(row)
                 roll_and_name[dct["Roll"]]=dct["Name"]
+
+
+    def credit_cleared(data):
+        cleared_dict = {}
+        for sem in data:
+            cleared_credit=0
+            for record in data[sem]:
+                if record["Grade"] =="F*" or record["Grade"] =="F" or record["Sub_Type"]=="Backlog":
+                    continue
+                else:
+                    cleared_credit+=int(record["Credit"])
+
+            cleared_dict[sem]=cleared_credit
+        
+        # print(cleared_dict)
+        # //exit()
+        return cleared_dict
+
     def spi_calculator( record):
         credit=[]
         grades=[]
@@ -181,6 +199,7 @@ def range_generate(range_roll):
             continue
         d = defaultdict(list)
         data=[]
+        
         header_list=["Sub.Code","Subject Name","L-T-P","CRD","GRD"]
         data.append(header_list)
         location="uploads\\grades.csv"
@@ -194,6 +213,9 @@ def range_generate(range_roll):
                     d[sem_no].append(dct)
         #print(d)
         # print(data)
+        cleared_dict = {}
+        cleared_dict = credit_cleared(d)
+
         workpdf=FPDF(orientation="L",unit="mm",format="A3")
         workpdf.add_page()
         # workpdf=FPDF(orientation="L",unit="mm",format="A3")
@@ -290,7 +312,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(108)
                 workpdf.set_x(20)
@@ -303,7 +325,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(167)
                 workpdf.set_x(20)
@@ -314,7 +336,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(226)
                 workpdf.set_x(20)
@@ -325,7 +347,7 @@ def range_generate(range_roll):
                 workpdf.cell(5*20)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(108)
                 workpdf.set_x(147)
@@ -337,7 +359,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(167)
                 workpdf.set_x(147)
@@ -348,7 +370,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(226)
                 workpdf.set_x(147)
@@ -359,7 +381,7 @@ def range_generate(range_roll):
                 workpdf.cell(10*20)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(108)
                 workpdf.set_x(290)
@@ -370,7 +392,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(167)
                 workpdf.set_x(290)
@@ -380,7 +402,7 @@ def range_generate(range_roll):
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(226)
                 workpdf.set_x(290)

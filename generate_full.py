@@ -17,7 +17,7 @@ def generate_all_pdf():
     grades_to_points={
         "AA" : 10,"AB" : 9,"BB" : 8,"BC" : 7,"CC" : 6,"CD" : 5,"DD" : 4,"F"  : 0,"I"  : 0 }
     # grades={"AA*":"AA","AA":"AA","AB":"AB","AB*":"AB","BB":"BB","BB*":"BB","BC":"BC","BC*":"BC","CC":"CC","CC*":"CC","CD":"CD","CD*":"CD","DD*":"DD","DD":"DD","F*":"F","F":"F","I*":"I","I":"I"}
-
+    # cleared_dict = {}
     subject_name ={}
     subject_ltp={}
     roll_and_name={}
@@ -46,6 +46,25 @@ def generate_all_pdf():
             for row in reader:
                 dct=dict(row)
                 roll_and_name[dct["Roll"]]=dct["Name"]
+
+
+    def credit_cleared(data):
+        cleared_dict = {}
+        for sem in data:
+            cleared_credit=0
+            for record in data[sem]:
+                if record["Grade"] =="F*" or record["Grade"] =="F" or record["Sub_Type"]=="Backlog":
+                    continue
+                else:
+                    cleared_credit+=int(record["Credit"])
+
+            cleared_dict[sem]=cleared_credit
+        
+        # print(cleared_dict)
+        # //exit()
+        return cleared_dict
+
+    
     def spi_calculator( record):
         credit=[]
         grades=[]
@@ -190,6 +209,10 @@ def generate_all_pdf():
                     d[sem_no].append(dct)
         #print(d)
         # print(data)
+        cleared_dict = {}
+        cleared_dict = credit_cleared(d)
+        # print(cleared_dict)
+        
         workpdf=FPDF(orientation="L",unit="mm",format="A3")
         workpdf.add_page()
         # workpdf=FPDF(orientation="L",unit="mm",format="A3")
@@ -286,7 +309,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(108)
                 workpdf.set_x(20)
@@ -299,7 +322,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(167)
                 workpdf.set_x(20)
@@ -310,7 +333,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=14)
                 workpdf.set_y(226)
                 workpdf.set_x(20)
@@ -321,7 +344,7 @@ def generate_all_pdf():
                 workpdf.cell(5*20)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(108)
                 workpdf.set_x(147)
@@ -333,7 +356,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(167)
                 workpdf.set_x(147)
@@ -344,7 +367,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=147)
                 workpdf.set_y(226)
                 workpdf.set_x(147)
@@ -355,7 +378,7 @@ def generate_all_pdf():
                 workpdf.cell(10*20)
                 workpdf.set_y(55)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(108)
                 workpdf.set_x(290)
@@ -366,7 +389,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(118)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(167)
                 workpdf.set_x(290)
@@ -376,7 +399,7 @@ def generate_all_pdf():
                 workpdf.cell(3)
                 workpdf.set_y(178)
                 cpi=cpi_genertor(sem_data,record_of_credit_and_spi)
-                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{record_of_credit_and_spi[sem_data][0]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
+                result_str=f"Credit Taken: {record_of_credit_and_spi[sem_data][0]}  Credits Cleared:{cleared_dict[sem_data]}  SPI:{record_of_credit_and_spi[sem_data][1]}  CPI:{cpi}"
                 create_table(table_data=data,title=f"Semester{sem_data}",cell_width=[20,70,15,10,10],x_start=282)
                 workpdf.set_y(226)
                 workpdf.set_x(290)
@@ -456,4 +479,4 @@ def generate_all_pdf():
             # else :
             #     print("hello")
             #for row in sem_data:
-    
+# generate_all_pdf()
